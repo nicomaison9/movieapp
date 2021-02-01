@@ -50,7 +50,7 @@ public class Movie {
 
 	
 	@Column(nullable = false,length=300)
-	String getTitle() {
+	public	String getTitle() {
 		return title;
 	}
 
@@ -58,7 +58,7 @@ public class Movie {
 		this.title = title;
 	}
 
-	@Column(nullable = true)
+	@Column(nullable = false)
 	public Integer getYear() {
 		return year;
 	}

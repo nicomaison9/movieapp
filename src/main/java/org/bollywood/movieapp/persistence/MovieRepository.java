@@ -1,5 +1,7 @@
 package org.bollywood.movieapp.persistence;
 
+import java.util.List;
+
 import org.bollywood.movieapp.entity.Movie;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -8,5 +10,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 //by default use database in memory H2
 //
 public interface MovieRepository extends JpaRepository<Movie, Integer>{
-
+List<Movie> findByTitle(String title);
 }
