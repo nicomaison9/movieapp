@@ -53,13 +53,15 @@ class testStreams {
 		var res= cities.parallelStream()  // intéressant pour des grandes listes sinon utiliser .Stream()
 		.map(String::trim)
 		.map(c-> c.toLowerCase()) // trim = enlève espaces avant et après
-//		.filter(c->c.startsWith("n"))
+		.filter(c->c.startsWith("n"))
 		.mapToInt(String::length)
 //		.sum();
 //		.average();
 //		.count();
 //		.min();
+//		.reduce();
 		.summaryStatistics();
+//		.reduce(null);
 		
 		
 		
