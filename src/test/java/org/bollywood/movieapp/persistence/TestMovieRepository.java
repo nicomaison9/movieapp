@@ -162,7 +162,10 @@ class TestMovieRepository {
 				new Movie("the man who discussing à l'oreille des chevaux", 1943, null), 
 				new Movie("titanic", 1952, null),
 				new Movie("men in black", 1999, null),
-				new Movie("island", 2001, null));
+				new Movie("harry potter et l'ordre du phenix", 2000, null),
+				new Movie("spectre", 2009, null),
+				new Movie("island", 2001, null),
+				new Movie("island2", 2010, null));
 		
 		
 		// je demande pour tous les movies d'appliquer la méthode persist de la class entitymanager
@@ -183,11 +186,12 @@ class TestMovieRepository {
 //		System.out.println(moviesFound);
 		
 		
-		assertEquals(1,moviesFound.size());
-		assertAll(moviesFound.stream().map(m-> () -> assertTrue(m.getYear()>=yearmin &&m.getYear()<=yearmax,m.getYear() +">="+yearmin +" && "+m.getYear() +"<="+yearmax)));
-		
-		
-		
+		assertEquals(3,moviesFound.size());
+		assertAll(moviesFound.stream().map(
+				m-> () -> assertTrue(
+						m.getYear()>=yearmin && m.getYear()<=yearmax,
+						 "intervalle demandé:" + yearmin+"<="+ m.getYear()+"<="+ yearmax)));
+				
 	}
 	@Test
 	void testfindByTitleContainingAndYearEquals() {
@@ -225,7 +229,7 @@ class TestMovieRepository {
 		
 		
 		assertEquals(1,moviesFound.size());
-		assertAll(moviesFound.stream().map(m-> () -> assertTrue(m.getTitle().equals("The lion king") && m.getYear()==yeartofind,"1 lion king trouvé")));
+		assertAll(moviesFound.stream().map(m-> () -> assertTrue(m.getTitle().equals(filmtofind) && m.getYear()==yeartofind,filmtofind + " not found")));
 	}
 	
 	@Test
@@ -263,7 +267,7 @@ class TestMovieRepository {
 		
 		
 		assertEquals(4,moviesFound.size());
-		assertAll(moviesFound.stream().map(m-> () -> assertTrue((Integer)(m.getDuration())==null ,"1 lion king trouvé")));
+		assertAll(moviesFound.stream().map(m-> () -> assertTrue((Integer)(m.getDuration())==null ,"not such a null duration film")));
 	}
 	
 	
