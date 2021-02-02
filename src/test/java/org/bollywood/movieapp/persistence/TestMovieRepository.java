@@ -15,6 +15,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @DataJpaTest
 class TestMovieRepository {
@@ -149,12 +151,13 @@ class TestMovieRepository {
 		
 	}
 	
-	@Test
-	void testfindByYearBetween() {
+
+	@ParameterizedTest
+	void testfindByYearBetween(int yearmin,int yearmax){
 		// given
 		// 1 - a title of movies to read in the test
-		int yearmin = 2000;
-		int yearmax = 2009;
+//		int yearmin = 2000;
+//		int yearmax = 2009;
 		// 2 - writing data in database via the entity manager
 		List<Movie> moviesDatabase = List.of(
 				new Movie("the man who knew too much", 1934, null),
@@ -191,14 +194,17 @@ class TestMovieRepository {
 				m-> () -> assertTrue(
 						m.getYear()>=yearmin && m.getYear()<=yearmax,
 						 "intervalle demandé:" + yearmin+"<="+ m.getYear()+"<="+ yearmax)));
-				
+		
+		
+		
 	}
-	@Test
-	void testfindByTitleContainingAndYearEquals() {
+	@ParameterizedTest
+	
+	void testfindByTitleContainingAndYearEquals(String filmtofind,int yeartofind) {
 		// given
 		// 1 - a title of movies to read in the test
-		String filmtofind="The lion king";
-		int yeartofind = 1980;
+//		String filmtofind="The lion king";
+//		int yeartofind = 1980;
 		// 2 - writing data in database via the entity manager
 		List<Movie> moviesDatabase = List.of(
 				new Movie("the man who knew too much", 1934, null),
