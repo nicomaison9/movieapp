@@ -96,7 +96,7 @@ public class MovieController {
 			@RequestParam(value = "y2", defaultValue = "2010") int yearmax) {
 		if (Objects.nonNull(yearmin)) {
 			if (Objects.nonNull(yearmax)) {
-				return movieRepository.findByYearBetween(yearmin, yearmax);
+				return movieRepository.findByYearBetweenOrderByTitleAsc(yearmin, yearmax);
 			}
 		} else if (Objects.nonNull(yearmax)) {
 			return movieRepository.findByYearGreaterThanEqual(yearmin);

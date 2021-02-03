@@ -3,6 +3,7 @@ package org.bollywood.movieapp.persistence;
 import java.util.List;
 
 import org.bollywood.movieapp.entity.Movie;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 //integer en fonction du nombre d'éléments à gérer
@@ -20,6 +21,7 @@ List<Movie> findByTitle(String title);
 //  from movie movie0_ where upper(movie0_.title) like upper(?) escape ?
 List<Movie> findByTitleContainingIgnoreCase(String title);
 
+List<Movie> findByYearOrderByTitle(int year);
 
 
 //where year >= 2000
@@ -30,7 +32,9 @@ List<Movie> findByYearGreaterThanEqual(int year);
 //where year between 2000 and 2009
 //select movie0_.id as id1_0_, movie0_.duration as duration2_0_, movie0_.title as title3_0_, movie0_.year as year4_0_ 
 //from movie movie0_ where movie0_.year between ? and ?
-List<Movie> findByYearBetween(int year1,int year2);
+List<Movie> findByYearBetweenOrderByTitleAsc(int year1,int year2);
+List<Movie> findByYearBetweenOrderByYear(int year1,int year2,Sort sort);
+List<Movie> findByYearBetween(int yearmin, int yearmax, Sort by);
 
 
 //where title = 'the lion king' and year =1994
@@ -42,4 +46,6 @@ List<Movie> findByTitleContainingAndYearEquals(String title,int year);
 //select movie0_.id as id1_0_, movie0_.duration as duration2_0_, movie0_.title as title3_0_, movie0_.year as year4_0_ 
 //from movie movie0_ where movie0_.duration is null
 List<Movie> findByDurationNull();
+
+
 }

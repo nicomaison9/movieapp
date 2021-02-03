@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 //POJO: plain old java object
@@ -17,17 +18,11 @@ public class Movie {
 	private String title;
 	private Integer year;
 	private Integer duration;
-	private String director;
+	private Artist director;
 	
-	//transient = opposé de persistant=  à ne pas sauvegarder
-	@Transient
-	public String getDirector() {
-		return director;
-	}
 
-	public void setDirector(String director) {
-		this.director = director;
-	}
+	
+
 
 	public Movie() {super();}
 	
@@ -36,6 +31,16 @@ public class Movie {
 		this.title = title;
 		this.year = year;
 		this.duration = duration;
+	}
+	//transient = opposé de persistant=  à ne pas sauvegarder
+	//@Transient
+	@ManyToOne	
+	public Artist getDirector() {
+		return director;
+	}
+
+	public void setDirector(Artist director) {
+		this.director = director;
 	}
 
 	@Id

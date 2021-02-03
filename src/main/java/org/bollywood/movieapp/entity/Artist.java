@@ -71,11 +71,11 @@ public void setDeathdate(LocalDate deathdate) {
 public String toString() {
 	StringBuilder builder= new StringBuilder();
 	builder.append(this.name)
-	.append("[")
+	.append("[(")
 	.append(birthdate)
-	.append("+")
+	.append("-")
 	.append(deathdate)
-	.append("+")
+	.append(") #")
 	.append(id)
 	.append("]");
 	return builder.toString();

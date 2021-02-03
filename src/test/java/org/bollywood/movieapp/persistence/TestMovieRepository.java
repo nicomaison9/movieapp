@@ -15,6 +15,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -73,7 +75,35 @@ class TestMovieRepository {
 //			assertEquals(title,m.getTitle(),"title");
 //			}
 		
-	}		
+	}	
+	
+	@Test
+	void testfindByYearBetween() {
+		int yearmin=1934;
+		int yearmax=2010;
+		List<Movie> moviesDatabase = List.of(
+				new Movie("ze man who knew too much", 1934, 168),
+				new Movie("wonderwoman", 1943, 168), 
+				new Movie("the man who discussing à l'oreille des chevaux", 1943, 189), 
+				new Movie("titanic", 1952, 196),
+				new Movie("men in black", 1999, null),
+				new Movie("harry potter et l'ordre du phenix", 2000, 210),
+				new Movie("spectre", 2009, 123),
+				new Movie("island", 2001, 12),
+				new Movie("island2", 2010, null));
+		moviesDatabase.forEach(entityManager::persist);
+		entityManager.flush();
+		var moviesByYear = movieRepository.findByYearBetween(yearmin,yearmax,Sort.by("year"));
+		System.out.println("--------------movie by year");
+		System.out.println(moviesByYear);
+		System.out.println("--------------movie by duration desc");
+		var moviesByDurationDesc = movieRepository.findByYearBetween(yearmin,yearmax,Sort.by(Direction.DESC,"duration"));
+		System.out.println(moviesByDurationDesc);
+		System.out.println("--------------movie by duration & title");
+		var moviesByDurationTitle = movieRepository.findByYearBetween(yearmin,yearmax,Sort.by("duration","title"));
+		System.out.println(moviesByDurationTitle);
+	}
+	
 	@Test
 	void testFindbyTitleContainingIgnoreCase() {
 		// given
@@ -151,9 +181,34 @@ class TestMovieRepository {
 		
 	}
 	
-
-	@ParameterizedTest
-	void testfindByYearBetween(int yearmin,int yearmax){
+	@Test
+	void testfindByYearBetweenOrderByYear() {
+		int yearmin=1934;
+		int yearmax=2010;
+		List<Movie> moviesDatabase = List.of(
+				new Movie("ze man who knew too much", 1934, 168),
+				new Movie("wonderwoman", 1943, 168), 
+				new Movie("the man who discussing à l'oreille des chevaux", 1943, 189), 
+				new Movie("titanic", 1952, 196),
+				new Movie("men in black", 1999, null),
+				new Movie("harry potter et l'ordre du phenix", 2000, 210),
+				new Movie("spectre", 2009, 123),
+				new Movie("island", 2001, 12),
+				new Movie("island2", 2010, null));
+		moviesDatabase.forEach(entityManager::persist);
+		entityManager.flush();
+		var moviesByYear = movieRepository.findByYearBetweenOrderByYear(yearmin,yearmax,Sort.by("year"));
+		System.out.println("--------------movie by year");
+		System.out.println(moviesByYear);
+		System.out.println("--------------movie by duration");
+		var moviesByDurationDesc = movieRepository.findByYearBetweenOrderByYear(yearmin,yearmax,Sort.by(Direction.DESC,"duration"));
+		System.out.println(moviesByDurationDesc);
+		System.out.println("--------------movie by duration & title");
+		var moviesByDurationTitle = movieRepository.findByYearBetweenOrderByYear(yearmin,yearmax,Sort.by("duration","title"));
+		System.out.println(moviesByDurationTitle);
+	}
+	@Test
+	void testfindByYearBetweenOrderByTitleAsc(int yearmin,int yearmax){
 		// given
 		// 1 - a title of movies to read in the test
 //		int yearmin = 2000;
@@ -179,7 +234,7 @@ class TestMovieRepository {
 		entityManager.flush();
 
 		// when: read from the repository
-		var moviesFound = movieRepository.findByYearBetween(yearmin,yearmax);
+		var moviesFound = movieRepository.findByYearBetweenOrderByTitleAsc(yearmin,yearmax);
 		// then
 		
 		/**
@@ -197,6 +252,31 @@ class TestMovieRepository {
 		
 		
 		
+	}
+	
+	@Test
+	void findByYearOrderByTitle(){
+		int year=1980;
+		List<Movie> moviesDatabase = List.of(
+				new Movie("the man who knew too much", 1934, null),
+				new Movie("wonderwoman", 1943, null), 
+				new Movie("the man who discussing à l'oreille des chevaux", 1943, null), 
+				new Movie("titanic", 1980, null),
+				new Movie("The lion king", 1980, null),
+				new Movie("The lion king", 1970, null),
+				new Movie("men in black", 1980, null));
+		
+		
+		// je demande pour tous les movies d'appliquer la méthode persist de la class entitymanager
+		moviesDatabase.forEach(entityManager::persist); // SQL: insert for each movie
+		
+		
+		// on s'assure que tous les inserts ont été faits => on fait un flush
+		entityManager.flush();
+
+		// when: read from the repository
+		var moviesFound = movieRepository.findByYearOrderByTitle(year);
+		System.out.println(moviesFound);
 	}
 	@ParameterizedTest
 	
