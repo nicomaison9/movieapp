@@ -1,10 +1,12 @@
 package org.bollywood.movieapp.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
@@ -34,7 +36,10 @@ public class Movie {
 	}
 	//transient = opposé de persistant=  à ne pas sauvegarder
 	//@Transient
-	@ManyToOne	
+	//(cascade=CascadeType.PERSIST) sauvegarde des objets en cascade
+	//	@ManyToOne(cascade=CascadeType.PERSIST)
+	@ManyToOne
+	@JoinColumn(name="id_director",nullable=true)
 	public Artist getDirector() {
 		return director;
 	}
@@ -85,7 +90,7 @@ public class Movie {
 	public String toString() {
 //		return "Movie [title=" + title + " ( year=" + year + ", duration=" + duration + ")]";
 		StringBuilder builder = new StringBuilder();
-		return builder.append(title).append("(").append(year).append(" ").append(id).append(",").append(duration).append(" min)").toString();
+		return builder.append(title).append("[(").append(year).append(",").append(duration).append(" min)").append(" #").append(id).append("]").toString();
 		
 
 	}

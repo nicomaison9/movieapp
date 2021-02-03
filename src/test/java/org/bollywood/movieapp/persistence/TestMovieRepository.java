@@ -207,52 +207,52 @@ class TestMovieRepository {
 		var moviesByDurationTitle = movieRepository.findByYearBetweenOrderByYear(yearmin,yearmax,Sort.by("duration","title"));
 		System.out.println(moviesByDurationTitle);
 	}
-	@Test
-	void testfindByYearBetweenOrderByTitleAsc(int yearmin,int yearmax){
-		// given
-		// 1 - a title of movies to read in the test
-//		int yearmin = 2000;
-//		int yearmax = 2009;
-		// 2 - writing data in database via the entity manager
-		List<Movie> moviesDatabase = List.of(
-				new Movie("the man who knew too much", 1934, null),
-				new Movie("wonderwoman", 1943, null), 
-				new Movie("the man who discussing à l'oreille des chevaux", 1943, null), 
-				new Movie("titanic", 1952, null),
-				new Movie("men in black", 1999, null),
-				new Movie("harry potter et l'ordre du phenix", 2000, null),
-				new Movie("spectre", 2009, null),
-				new Movie("island", 2001, null),
-				new Movie("island2", 2010, null));
-		
-		
-		// je demande pour tous les movies d'appliquer la méthode persist de la class entitymanager
-		moviesDatabase.forEach(entityManager::persist); // SQL: insert for each movie
-		
-		
-		// on s'assure que tous les inserts ont été faits => on fait un flush
-		entityManager.flush();
-
-		// when: read from the repository
-		var moviesFound = movieRepository.findByYearBetweenOrderByTitleAsc(yearmin,yearmax);
-		// then
-		
-		/**
-		 * commentaires à ne pas laisser en prod
-		 */
-//		System.out.println(moviesDatabase);
-//		System.out.println(moviesFound);
-		
-		
-		assertEquals(3,moviesFound.size());
-		assertAll(moviesFound.stream().map(
-				m-> () -> assertTrue(
-						m.getYear()>=yearmin && m.getYear()<=yearmax,
-						 "intervalle demandé:" + yearmin+"<="+ m.getYear()+"<="+ yearmax)));
-		
-		
-		
-	}
+//	@Test
+//	void testfindByYearBetweenOrderByTitleAsc(int yearmin,int yearmax){
+//		// given
+//		// 1 - a title of movies to read in the test
+////		int yearmin = 2000;
+////		int yearmax = 2009;
+//		// 2 - writing data in database via the entity manager
+//		List<Movie> moviesDatabase = List.of(
+//				new Movie("the man who knew too much", 1934, null),
+//				new Movie("wonderwoman", 1943, null), 
+//				new Movie("the man who discussing à l'oreille des chevaux", 1943, null), 
+//				new Movie("titanic", 1952, null),
+//				new Movie("men in black", 1999, null),
+//				new Movie("harry potter et l'ordre du phenix", 2000, null),
+//				new Movie("spectre", 2009, null),
+//				new Movie("island", 2001, null),
+//				new Movie("island2", 2010, null));
+//		
+//		
+//		// je demande pour tous les movies d'appliquer la méthode persist de la class entitymanager
+//		moviesDatabase.forEach(entityManager::persist); // SQL: insert for each movie
+//		
+//		
+//		// on s'assure que tous les inserts ont été faits => on fait un flush
+//		entityManager.flush();
+//
+//		// when: read from the repository
+//		var moviesFound = movieRepository.findByYearBetweenOrderByTitleAsc(yearmin,yearmax);
+//		// then
+//		
+//		/**
+//		 * commentaires à ne pas laisser en prod
+//		 */
+////		System.out.println(moviesDatabase);
+////		System.out.println(moviesFound);
+//		
+//		
+//		assertEquals(3,moviesFound.size());
+//		assertAll(moviesFound.stream().map(
+//				m-> () -> assertTrue(
+//						m.getYear()>=yearmin && m.getYear()<=yearmax,
+//						 "intervalle demandé:" + yearmin+"<="+ m.getYear()+"<="+ yearmax)));
+//		
+//		
+//		
+//	}
 	
 	@Test
 	void findByYearOrderByTitle(){
@@ -278,45 +278,45 @@ class TestMovieRepository {
 		var moviesFound = movieRepository.findByYearOrderByTitle(year);
 		System.out.println(moviesFound);
 	}
-	@ParameterizedTest
-	
-	void testfindByTitleContainingAndYearEquals(String filmtofind,int yeartofind) {
-		// given
-		// 1 - a title of movies to read in the test
-//		String filmtofind="The lion king";
-//		int yeartofind = 1980;
-		// 2 - writing data in database via the entity manager
-		List<Movie> moviesDatabase = List.of(
-				new Movie("the man who knew too much", 1934, null),
-				new Movie("wonderwoman", 1943, null), 
-				new Movie("the man who discussing à l'oreille des chevaux", 1943, null), 
-				new Movie("titanic", 1952, null),
-				new Movie("The lion king", 1980, null),
-				new Movie("The lion king", 1969, null),
-				new Movie("men in black", 1999, null));
-		
-		
-		// je demande pour tous les movies d'appliquer la méthode persist de la class entitymanager
-		moviesDatabase.forEach(entityManager::persist); // SQL: insert for each movie
-		
-		
-		// on s'assure que tous les inserts ont été faits => on fait un flush
-		entityManager.flush();
-
-		// when: read from the repository
-		var moviesFound = movieRepository.findByTitleContainingAndYearEquals(filmtofind,yeartofind);
-		// then
-		
-		/**
-		 * commentaires à ne pas laisser en prod
-		 */
-//		System.out.println(moviesDatabase);
-//		System.out.println(moviesFound);
-		
-		
-		assertEquals(1,moviesFound.size());
-		assertAll(moviesFound.stream().map(m-> () -> assertTrue(m.getTitle().equals(filmtofind) && m.getYear()==yeartofind,filmtofind + " not found")));
-	}
+//	@ParameterizedTest
+//	
+//	void testfindByTitleContainingAndYearEquals(String filmtofind,int yeartofind) {
+//		// given
+//		// 1 - a title of movies to read in the test
+////		String filmtofind="The lion king";
+////		int yeartofind = 1980;
+//		// 2 - writing data in database via the entity manager
+//		List<Movie> moviesDatabase = List.of(
+//				new Movie("the man who knew too much", 1934, null),
+//				new Movie("wonderwoman", 1943, null), 
+//				new Movie("the man who discussing à l'oreille des chevaux", 1943, null), 
+//				new Movie("titanic", 1952, null),
+//				new Movie("The lion king", 1980, null),
+//				new Movie("The lion king", 1969, null),
+//				new Movie("men in black", 1999, null));
+//		
+//		
+//		// je demande pour tous les movies d'appliquer la méthode persist de la class entitymanager
+//		moviesDatabase.forEach(entityManager::persist); // SQL: insert for each movie
+//		
+//		
+//		// on s'assure que tous les inserts ont été faits => on fait un flush
+//		entityManager.flush();
+//
+//		// when: read from the repository
+//		var moviesFound = movieRepository.findByTitleContainingAndYearEquals(filmtofind,yeartofind);
+//		// then
+//		
+//		/**
+//		 * commentaires à ne pas laisser en prod
+//		 */
+////		System.out.println(moviesDatabase);
+////		System.out.println(moviesFound);
+//		
+//		
+//		assertEquals(1,moviesFound.size());
+//		assertAll(moviesFound.stream().map(m-> () -> assertTrue(m.getTitle().equals(filmtofind) && m.getYear()==yeartofind,filmtofind + " not found")));
+//	}
 	
 	@Test
 	void findByDurationNull() {
