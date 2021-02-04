@@ -47,5 +47,5 @@ List<Movie> findByTitleContainingAndYearEquals(String title,int year);
 //from movie movie0_ where movie0_.duration is null
 List<Movie> findByDurationNull();
 
-
+List<Movie> findByDirectorName(String name);
 }

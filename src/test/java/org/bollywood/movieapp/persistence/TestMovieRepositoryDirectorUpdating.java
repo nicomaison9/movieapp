@@ -77,10 +77,12 @@ class TestMovieRepositoryDirectorUpdating {
 		var movieRead= optmovieRead.get();
 		System.out.println("Read: "+artistRead);
 		System.out.println("Read: "+movieRead+ " with director "+ movieRead.getDirector());
+		// set association
 		movieRead.setDirector(artistRead);
-		
+		//synchronize Jpa Repository
+		//update movie set id_director=?, duration=?, title=?, year=? where id=?_
 		entityManager.flush(); // activer la synchronisation
-		
+		//TODO: empty cache and read again data to check director association
 		
 		
 		

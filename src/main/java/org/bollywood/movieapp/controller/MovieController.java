@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.bollywood.movieapp.entity.Artist;
 import org.bollywood.movieapp.entity.Movie;
+import org.bollywood.movieapp.persistence.ArtistRepository;
 import org.bollywood.movieapp.persistence.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,6 +30,9 @@ public class MovieController {
 
 	@Autowired
 	private MovieRepository movieRepository;
+	
+	@Autowired
+	private ArtistRepository artistRepository;
 
 	/**
 	 * on rentre avec localhost:8080/api/movies
@@ -151,5 +156,49 @@ public class MovieController {
 		// TODO: persist movie object
 		return optmovieDb;
 	}
-
+	
+	/**
+	 * path /api/movies/director?mid=1&did=3
+	 * @param idMovie
+	 * @param idDirector
+	 * @return
+	 */
+	@PutMapping("/director")
+	public Optional<Movie> setDirector(
+			@RequestParam("mid") int idMovie,
+			@RequestParam("did") int idDirector){
+		//chercher Movie et artist correspondant à idmovie et iddirector
+		
+		Optional<Movie> optmovie = movieRepository.findById(idMovie);
+		Optional<Artist> optartist = artistRepository.findById(idDirector);
+		//		si ok*2
+		if (optartist.isPresent() && optmovie.isPresent())
+		{
+			Movie movie=optmovie.get();
+			Artist artist= optartist.get();
+			movie.setDirector(artist);
+			return Optional.of(movie);
+		}
+		else	return Optional.empty();
+	}
+	/**
+	 * path /api/movies/director2?mid=1&did=3
+	 * @param idMovie
+	 * @param idDirector
+	 * @return
+	 */
+	@PutMapping("/director2")
+	public Optional<Movie> setDirector2(
+			@RequestParam("mid") int idMovie,
+			@RequestParam("did") int idDirector){
+//		movie:	 select movie0_.id as id1_1_0_, movie0_.id_director as id_direc5_1_0_, movie0_.duration as duration2_1_0_, movie0_.title as title3_1_0_, movie0_.year as year4_1_0_, artist1_.id as id1_0_1_, artist1_.birthdate as birthdat2_0_1_, artist1_.deathdate as deathdat3_0_1_, artist1_.name as name4_0_1_ from movie movie0_ left outer join artist artist1_ on movie0_.id_director=artist1_.id where movie0_.id=?
+//		artist:	 select artist0_.id as id1_0_0_, artist0_.birthdate as birthdat2_0_0_, artist0_.deathdate as deathdat3_0_0_, artist0_.name as name4_0_0_ from artist artist0_ where artist0_.id=?
+//		director:update movie set id_director=?, duration=?, title=?, year=? where id=?
+		
+		return movieRepository.findById(idMovie)
+				.flatMap(m-> artistRepository.findById(idDirector)
+						.map(a->{m.setDirector(a);return m;}));
+		
+		
+	}
 }
