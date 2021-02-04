@@ -78,6 +78,7 @@ class TestMovieRepositoryDirectorFind {
 		System.out.println(moviesFound);
 		// TODO: vérifier le nombre de retours
 		// verify all directed by todd par assert
+		assertEquals(7,moviesFound.size(),"number movies");
 		assertAll(
 				moviesFound.stream()
 				.map(Movie::getDirector)
