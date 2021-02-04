@@ -48,4 +48,6 @@ List<Movie> findByTitleContainingAndYearEquals(String title,int year);
 List<Movie> findByDurationNull();
 
 List<Movie> findByDirectorName(String name);
+
+List<Movie> findByActorsName(String name);
 }
