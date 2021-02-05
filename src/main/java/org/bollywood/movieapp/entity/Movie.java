@@ -10,13 +10,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 //POJO: plain old java object
 //Bean
-@Entity
+@Entity //persistance via une table
+@Table(name = "movies") // nom de la table dans postgresql
 public class Movie {
 	// implicit default constructor
 
@@ -93,6 +96,9 @@ public class Movie {
 	}
 
 	@ManyToMany
+	@JoinTable(name = "play", 
+				joinColumns = @JoinColumn(name="id_movie"),   		//foreign key to this entity(movie)
+				inverseJoinColumns = @JoinColumn(name="id_actor"))  //foreign key to the other entity(artist)
 	public List<Artist> getActors() {
 		return actors;
 	}

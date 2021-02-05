@@ -8,11 +8,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.TemporalType;
 
 import org.springframework.data.jpa.repository.Temporal;
 
 @Entity
+@Table(name = "stars") // nom de la table dans postgresql
 public class Artist {
 private Integer id;
 private String name; //required
