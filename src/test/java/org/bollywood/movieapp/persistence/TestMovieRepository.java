@@ -13,6 +13,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 class TestMovieRepository {
 //test de la classe movie pour être utilisée dans le repository
 	@BeforeEach
@@ -32,6 +35,14 @@ class TestMovieRepository {
 
 	@Autowired
 	private EntityManager entityManager;
+	
+	
+	@Test
+	void testCount() {
+		
+		long nb_movies=movieRepository.count(); // fonction d'agregat donnée, par défaut va reprendre dans base de donnée H2, utiliser annotation @AutoConfigureTestDatabase(replace = Replace.NONE)
+		System.out.println(nb_movies);
+	}
 
 	@Test
 	void testFindbyTitle() {

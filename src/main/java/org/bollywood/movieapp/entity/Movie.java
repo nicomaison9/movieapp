@@ -18,7 +18,7 @@ import javax.persistence.Transient;
 
 //POJO: plain old java object
 //Bean
-@Entity //persistance via une table
+@Entity // persistance via une table
 @Table(name = "movies") // nom de la table dans postgresql
 public class Movie {
 	// implicit default constructor
@@ -29,36 +29,20 @@ public class Movie {
 	private Integer duration;
 	private Artist director;
 	private List<Artist> actors;
-	
-
-	
-
 
 	public Movie() {
-		actors=new ArrayList<>();}
-	
+		actors = new ArrayList<>();
+	}
+
 	public Movie(String title, Integer year, Integer duration) {
 		this();
 		this.title = title;
 		this.year = year;
 		this.duration = duration;
 	}
-	//transient = opposé de persistant=  à ne pas sauvegarder
-	//@Transient
-	//(cascade=CascadeType.PERSIST) sauvegarde des objets en cascade
-	//	@ManyToOne(cascade=CascadeType.PERSIST)
-	@ManyToOne
-	@JoinColumn(name="id_director",nullable=true)
-	public Artist getDirector() {
-		return director;
-	}
-
-	public void setDirector(Artist director) {
-		this.director = director;
-	}
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Integer getId() {
 		return id;
 	}
@@ -67,9 +51,8 @@ public class Movie {
 		this.id = id;
 	}
 
-	
-	@Column(nullable = false,length=300)
-	public	String getTitle() {
+	@Column(nullable = false, length = 300)
+	public String getTitle() {
 		return title;
 	}
 
@@ -95,10 +78,23 @@ public class Movie {
 		this.duration = duration;
 	}
 
+	// transient = opposé de persistant= à ne pas sauvegarder
+	// @Transient
+	// (cascade=CascadeType.PERSIST) sauvegarde des objets en cascade
+	// @ManyToOne(cascade=CascadeType.PERSIST)
+	@ManyToOne
+	@JoinColumn(name = "id_director", nullable = true)
+	public Artist getDirector() {
+		return director;
+	}
+
+	public void setDirector(Artist director) {
+		this.director = director;
+	}
+
 	@ManyToMany
-	@JoinTable(name = "play", 
-				joinColumns = @JoinColumn(name="id_movie"),   		//foreign key to this entity(movie)
-				inverseJoinColumns = @JoinColumn(name="id_actor"))  //foreign key to the other entity(artist)
+	@JoinTable(name = "play", joinColumns = @JoinColumn(name = "id_movie"), // foreign key to this entity(movie)
+			inverseJoinColumns = @JoinColumn(name = "id_actor")) // foreign key to the other entity(artist)
 	public List<Artist> getActors() {
 		return actors;
 	}
@@ -111,8 +107,17 @@ public class Movie {
 	public String toString() {
 //		return "Movie [title=" + title + " ( year=" + year + ", duration=" + duration + ")]";
 		StringBuilder builder = new StringBuilder();
-		return builder.append(title).append("[(").append(year).append(",").append(duration).append(" min)").append(" #").append(id).append("]").toString();
-		
+		return builder
+				.append(title)
+				.append("[(")
+				.append(year)
+				.append(",")
+				.append(duration)
+				.append(" min)")
+				.append(" #")
+				.append(id)
+				.append("]")
+				.toString();
 
 	}
 
