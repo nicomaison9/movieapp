@@ -5,10 +5,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 
+import org.bollywood.movieapp.dto.MovieByYear;
+import org.bollywood.movieapp.dto.MovieStat;
+import org.bollywood.movieapp.dto.NameYearTitle;
 import org.bollywood.movieapp.entity.Artist;
 import org.bollywood.movieapp.entity.Movie;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,9 +44,6 @@ class TestHibernateQueriesJPQL {
 	 * ------------------testing JPQL-----------------
 	 */
 
-
-	
-	
 	@Test
 	void test_select_all_as_list() {
 		// select movie0_.id as id1_0_, movie0_.id_director as id_direc5_0_,
@@ -124,50 +126,148 @@ class TestHibernateQueriesJPQL {
 
 	}
 
-	
 	@Test
 	void test_movie_stat() {
-		//count
+		// count
 		TypedQuery<Long> query = entityManager.createQuery("select count(*) from Movie m", Long.class);
 		Long nb_movies = query.getSingleResult();
 		System.out.println(nb_movies);
-		
-		//min(year)
-		int min_year = entityManager.createQuery("select min(m.year) from Movie m",Integer.class).getSingleResult();
-		System.out.println("year of first movie: "+ min_year);
-		
-		//sum(duration) between year1 and year2
-		long total_duration = entityManager.createQuery(
-				"select coalesce(sum(m.duration),0) from Movie m where m.year between :year1 and :year2",Long.class)
+
+		// min(year)
+		int min_year = entityManager.createQuery("select min(m.year) from Movie m", Integer.class).getSingleResult();
+		System.out.println("year of first movie: " + min_year);
+
+		// sum(duration) between year1 and year2
+		long total_duration = entityManager
+				.createQuery("select coalesce(sum(m.duration),0) from Movie m where m.year between :year1 and :year2",
+						Long.class)
 				// sans coalesce, result = null
 				// avec coalesce, result = 0; renvoie la première valeur non nulle
-				 .setParameter("year1", 2021)
-				 .setParameter("year2", 2029).getSingleResult();
-		System.out.println("total duration : "+ total_duration);
-		
-		//min(duration) between year1 and year2
-				Optional<Integer> min_duration = Optional.ofNullable(
-						entityManager.createQuery(
-						"select min(m.duration) from Movie m where m.year between :year1 and :year2",Integer.class) //type erasure
-						 .setParameter("year1",2020)
-						 .setParameter("year2", 2029).getSingleResult());
-				System.out.println("min duration : "+ min_duration);
+				.setParameter("year1", 2021).setParameter("year2", 2029).getSingleResult();
+		System.out.println("total duration : " + total_duration);
+
+		// min(duration) between year1 and year2
+		Optional<Integer> min_duration = Optional.ofNullable(entityManager
+				.createQuery("select min(m.duration) from Movie m where m.year between :year1 and :year2",
+						Integer.class) // type erasure
+				.setParameter("year1", 2020).setParameter("year2", 2029).getSingleResult());
+		System.out.println("min duration : " + min_duration);
 
 	}
-	
+
 	@Test
-	void test_movie_several_stats() {
-		var res=entityManager.createQuery(
-				//la notion de tuple n'exite pas en java, on est obligé de passer par un array
-				"select count(*),min(m.year), max(m.year) from Movie m",
-				Object[].class)
-				.getSingleResult();
-		System.out.println("movie stats: "+ Arrays.toString(res)+"("+res.getClass()+")"); 
-		long nb_movies = (long)res[0];
-		int min_year = (int)res[1];
-		int max_year= (int)res[2];
-		System.out.println(" nb de movies: "+nb_movies+"\n année min   : "+min_year+"\n année max   : "+max_year);
-				
+	void test_movie_several_stats_as_object_array() {
+		var res = entityManager.createQuery(
+				// la notion de tuple n'exite pas en java, on est obligé de passer par un array
+				"select count(*),min(m.year), max(m.year) from Movie m", Object[].class).getSingleResult();
+		System.out.println("movie stats: " + Arrays.toString(res) + "(" + res.getClass() + ")");
+		long nb_movies = (long) res[0];
+		int min_year = (int) res[1];
+		int max_year = (int) res[2];
+		System.out.println(
+				" nb de movies: " + nb_movies + "\n année min   : " + min_year + "\n année max   : " + max_year);
+
 	}
+
+	@Test
+	void test_movie_several_stats_as_tuple() {
+		var res = entityManager.createQuery(
+				// la notion de tuple n'exite pas en java, on est obligé de passer par un array
+				"select count(*),min(m.year), max(m.year) from Movie m", Tuple.class).getSingleResult();
+		System.out.println("movie stats: " + res);
+		long nb_movies = res.get(0, Long.class);
+		int min_year = res.get(1, Integer.class);
+		int max_year = res.get(2, Integer.class);
+		System.out.println(
+				" nb de movies: " + nb_movies + "\n année min   : " + min_year + "\n année max   : " + max_year);
+
+	}
+
+	@Test
+	void test_movie_several_stats_as_dto() {
+		var res = entityManager.createQuery("select count(*),min(m.year), max(m.year) from Movie m", MovieStat.class)
+				.getSingleResult();
+		System.out.println("movie stats: " + res);
+		long nb_movies = res.getCount();
+		int min_year = res.getMinYear();
+		int max_year = res.getMaxYear();
+		System.out.println(
+				" nb de movies: " + nb_movies + "\n année min   : " + min_year + "\n année max   : " + max_year);
+
+	}
+
+	@Test
+	void test_movie_several_stats_as_dto_bis() {
+		// cadeau jdql: créer un objet dans la requête
+		var res = entityManager.createQuery(
+				"select new org.bollywood.movieapp.dto.MovieStat(count(*),min(m.year), max(m.year)) from Movie m",
+				MovieStat.class).getSingleResult();
+		System.out.println("movie stats: " + res);
+		long nb_movies = res.getCount();
+		int min_year = res.getMinYear();
+		int max_year = res.getMaxYear();
+		System.out.println(
+				" nb de movies: " + nb_movies + "\n année min   : " + min_year + "\n année max   : " + max_year);
+
+	}
+
+	@Test
+	void test_movie_projection() {
+		String name = "John Wayne";
+		List<NameYearTitle> res = entityManager.createQuery(
+				"select  new org.bollywood.movieapp.dto.NameYearTitle( a.name,m.year,m.title) from Movie m join m.actors a where a.name like :name order by m.year",
+				NameYearTitle.class).setParameter("name", name).getResultStream().limit(10)
+				.collect(Collectors.toList());
+		res.forEach(nyt -> System.out
+				.println("name = " + nyt.getName() + " year = " + nyt.getYear() + " title= " + nyt.getTitle()));
+	}
+
+	// nb movies by year(params thresholdCount,thresholdYear) order by Year/count
+	// desc
+	@Test
+	void test_movie_stat_by_year() {
+		entityManager.createQuery("select m.year, count(*) from Movie m group by m.year", Object[].class)
+				.getResultStream().limit(10).forEach(row -> System.out.println(Arrays.toString(row)));
+	}
+
+	// nb movies by year(params thresholdCount,thresholdYear) order by Year/count
+	// desc
+	@Test
+	void test_movie_stat_by_year2() {
+		entityManager
+				.createQuery("select m.year, count(*) as nb_movies from Movie m group by m.year order by year desc ",
+						Object[].class)
+				.getResultStream().limit(10).forEach(row -> System.out.println(Arrays.toString(row)));
+	}
+
+	// nb movies by year(params thresholdCount,thresholdYear) order by Year/count
+	// desc
+	@Test
+	void test_movie_stat_by_year3() {
+		entityManager
+				.createQuery("select new org.bollywood.movieapp.dto.MovieByYear(m.year,count(*) as nb_movies) from Movie m group by m.year order by year desc ",
+						MovieByYear.class)
+				.getResultStream().limit(10).forEach(row -> System.out.println("year = "+ row.getYear()+" count = "+row.getCount()));
+	}
+
+	// stats by director (count, min(year), max(year) order by count desc
+	//TODO: a faire en array, tuple et en dto
+	// stats by actor (count, min(year), max(year) order by count desc
+	//TODO: a faire en array, tuple et en dto
 	
+	//ambiguité
+	void test_movie_ambigue() {
+		int deltaYear=2;
+		var res=entityManager
+//		.createQuery("select m from Movies m where extract(year from current_date) - m.year <= :deltaYear",Movie.class)
+//		pour pas de conflit, mettre en UPPERCASE
+		.createQuery("select m from Movies m where EXTRACT(YEAR FROM CURENT_DATE) - m.year <= :deltaYear",Movie.class)
+		.setParameter("deltaYear", deltaYear)
+		.getResultList();
+		System.out.println(res);
+		
+		
+	}
+
+
 }

@@ -1,10 +1,13 @@
 package org.bollywood.movieapp.persistence;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.bollywood.movieapp.dto.MovieStat;
 import org.bollywood.movieapp.entity.Movie;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 //integer en fonction du nombre d'éléments à gérer
 //long si besoin de d'avantage d'éléments
@@ -50,4 +53,16 @@ List<Movie> findByDurationNull();
 List<Movie> findByDirectorName(String name);
 
 List<Movie> findByActorsName(String name);
+
+
+@Query("select coalesce(sum(m.duration),0) from Movie m where m.year between ?1 and ?2")
+Long totalDuration(int yearmin, int yearmax);
+
+@Query("select avg(m.duration) from Movie m where m.year between :yearmin and :yearmax")
+Optional<Double> averageDuration(int yearmin, int yearmax);
+
+@Query("select new org.bollywood.movieapp.dto.MovieStat(count(*),min(m.year), max(m.year)) from Movie m")
+MovieStat statistics();
+
+
 }
