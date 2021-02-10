@@ -2,7 +2,9 @@ package org.bollywood.movieapp.persistence;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import org.bollywood.movieapp.dto.MovieByYear;
 import org.bollywood.movieapp.dto.MovieStat;
 import org.bollywood.movieapp.entity.Movie;
 import org.springframework.data.domain.Sort;
@@ -64,5 +66,7 @@ Optional<Double> averageDuration(int yearmin, int yearmax);
 @Query("select new org.bollywood.movieapp.dto.MovieStat(count(*),min(m.year), max(m.year)) from Movie m")
 MovieStat statistics();
 
+@Query("select new org.bollywood.movieapp.dto.MovieByYear(m.year,count(*) as nb_movies) from Movie m group by m.year order by year desc ")
+Stream<MovieByYear> statistics2();
 
 }

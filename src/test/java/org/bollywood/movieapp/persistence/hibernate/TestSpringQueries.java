@@ -110,11 +110,20 @@ class TestSpringQueries {
 		
 	}
 	@Test
-	void test_filmography2_dto() {
+	void test_filmography2_interface_de_dto() {
 		String name="Clint Eastwood";
 		artistRepository.filmography2(name)
 			.forEach(nyt -> System.out
 				.println("name = " + nyt.getName() + "; year = " + nyt.getYear() + "; title= " + nyt.getTitle()+"; class= "+nyt.getClass()));
+		
+	}
+	
+	@Test
+	void test_statistics2_interface_de_dto() {
+		String name="Clint Eastwood";
+		movieRepository.statistics2()
+			.forEach(nyt -> System.out
+				.println("name = " + nyt.getYear() + "; count = " + nyt.getCount() ));
 		
 	}
 	}

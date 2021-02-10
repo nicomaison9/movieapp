@@ -12,8 +12,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface ArtistRepository extends JpaRepository<Artist,Integer>{
-//	List<Artist> findByName(String name);
-	Set<Artist> findByNameIgnoreCase(String Name); 			//liste non triée
+	//	List<Artist> findByName(String name);
+	Set<Artist> findByNameIgnoreCase(String Name); 				//liste non triée
 	Stream<Artist> findByNameEndingWithIgnoreCase(String name); //à préférer à la liste
 	
 	@Query("select a from Artist a where EXTRACT(YEAR FROM a.birthdate) = :year")

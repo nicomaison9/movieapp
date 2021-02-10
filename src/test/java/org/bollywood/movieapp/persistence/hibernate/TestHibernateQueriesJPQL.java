@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 
+import org.bollywood.movieapp.dto.DirectorCount;
 import org.bollywood.movieapp.dto.MovieByYear;
 import org.bollywood.movieapp.dto.MovieStat;
 import org.bollywood.movieapp.dto.NameYearTitle;
@@ -252,7 +253,18 @@ class TestHibernateQueriesJPQL {
 
 	// stats by director (count, min(year), max(year) order by count desc
 	//TODO: a faire en array, tuple et en dto
-	// stats by actor (count, min(year), max(year) order by count desc
+	@Test
+	void test_movie_stat_by_director() {
+		
+		String name = "Alfred Hitchcock"; //select count(*) as count,min(year) as yearmin,max(year) as yearmax from movies m join stars s on m.id_director=s.id order by count desc
+		List<DirectorCount> res=  entityManager 
+				.createQuery("select new org.bollywood.movieapp.dto.directorCount(count(*) as count,min(year) as yearmin,max(year) as yearmax from Movie m join m.director order by count(*) desc",
+						DirectorCount.class)
+				.getResultStream().limit(10).collect(Collectors.toList());
+		res.forEach(d->System.out.println("count= "+d.getCount()+"yearmin= "+d.getYearmin()+"yearmax= "+d.getYearmax()));
+		
+	}
+						// stats by actor (count, min(year), max(year) order by count desc
 	//TODO: a faire en array, tuple et en dto
 	
 	//ambiguité
