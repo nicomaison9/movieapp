@@ -1,9 +1,10 @@
-package movieapp.dto;
+package org.bollywood.movieapp.dto;
 
 public class MovieSimple {
 	private Integer id;
 	private String title;
 	private Integer year;
+	
 	
 	public Integer getId() {
 		return id;
@@ -23,10 +24,5 @@ public class MovieSimple {
 	public void setYear(Integer year) {
 		this.year = year;
 	}
-	
-	@Override
-	public String toString() {
-		return "MovieSimple [id=" + id + ", title=" + title + ", year=" + year + "]";
-	}
-	
+
 }
