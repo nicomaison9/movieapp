@@ -125,7 +125,7 @@ class TestArtistServiceJpa {
 		given(artistRepository.findByName(name))
 			.willReturn(Stream.of(artistEntity));  //(Optional.of(Stream.of(artistEntity)));
 		// 2. when
-		Stream<ArtistSimple> streamArtistSimpleDtoOut = artistService.getByName(name);
+		List<ArtistSimple> ListArtistSimpleDtoOut = artistService.getByName(name);
 		// 3. then
 		// check mock has been called
 //		then(artistRepository)
@@ -134,7 +134,7 @@ class TestArtistServiceJpa {
 //		// check answer
 		
 		
-		assertAll(streamArtistSimpleDtoOut.map(
+		assertAll(ListArtistSimpleDtoOut.stream().map(
 				a->()->assertEquals(name,a.getName())));
 	
 				

@@ -17,13 +17,16 @@ class TestModelBidirectional {
 
 	@Autowired
 	ArtistRepository artistRepository;
-	
-	
+
 	@Test
-	void testReadMoviesDirected() {
+	void testReadMoviesDirectedandplayed() {
 		String name= "Clint Eastwood";
 		var res=artistRepository.findByNameEndingWithIgnoreCase(name);
-		res.forEach(a->System.out.println(a.getDirectedMovies()));
+		res.forEach(a->{
+			System.out.println("artist "+a.getId() );
+			System.out.println("Directed "+a.getDirectedMovies());
+			System.out.println("Played: "+a.getPlayedMovies());
+			});
 		
 	}
 

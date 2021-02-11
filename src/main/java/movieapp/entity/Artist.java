@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -26,10 +27,12 @@ public class Artist {
 	private LocalDate deathdate;
 	
 	private List<Movie> directedMovies;
+	private List<Movie> playedMovies;
 	
 	public Artist() {
 		super();
 		this.directedMovies=new ArrayList<Movie>();
+		this.playedMovies=new ArrayList<Movie>();
 		
 	}
 	
@@ -89,6 +92,15 @@ public class Artist {
 
 	public void setDirectedMovies(List<Movie> directedMovies) {
 		this.directedMovies = directedMovies;
+	}
+
+	@ManyToMany(mappedBy="actors")
+	public List<Movie> getPlayedMovies() {
+		return playedMovies;
+	}
+
+	public void setPlayedMovies(List<Movie> playedMovies) {
+		this.playedMovies = playedMovies;
 	}
 
 	@Override
