@@ -2,6 +2,9 @@ package movieapp.controller;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -10,10 +13,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -48,6 +53,9 @@ class TestArtistController {
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$").doesNotExist());
+		then(artistService)
+		.should()
+		.getById(eq(id));
 	}
 	
 	@Test
@@ -70,12 +78,22 @@ class TestArtistController {
 			.andExpect(jsonPath("$.id").value(id))
 			.andExpect(jsonPath("$.name").value(name))
 			.andExpect(jsonPath("$.birthdate").value(birthdate.toString())); // ISO Format
+		then(artistService)
+		.should()
+		.getById(eq(id));
 	}
 	
 	@Test
 	void testAdd() throws Exception {
 		// 1. given
-		String artistJsonIn = "{\"name\":\"Will Smith\", \"birthdate\":\"1968-98-25\"}";
+		int id=1;
+		String name ="Will Smith";
+		LocalDate birthdate = LocalDate.of(1968, 9, 25);
+		String artistJsonIn = JsonProvider.artistJson(name, birthdate);
+		
+		//perfect response from mock service
+		given(artistService.add(any()))
+				.willReturn(new ArtistSimple(id,name,birthdate));
 		
 		// 2. when/then
 		mockMvc
@@ -83,8 +101,48 @@ class TestArtistController {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(artistJsonIn)
 				.accept(MediaType.APPLICATION_JSON)) // + header request
-			.andDo(print());	// intercept request to print 
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.id").exists())
+			.andExpect(jsonPath("$.id").value(id))
+			.andExpect(jsonPath("$.name").value(name))
+			.andExpect(jsonPath("$.birthdate").value(birthdate.toString())); // ISO Format 
+		then(artistService)
+			.should()
+			.add(any());
 	}
-
+	@Test
+	void testGetByName() throws Exception {
+		// 1. given
+		int nbArtist = 3;
+		String name = "McQueen";
+		List<ArtistSimple> artistsFromService = List.of(
+				new ArtistSimple(1, "Steve McQueen", LocalDate.of(1930, 3, 24)),
+				new ArtistSimple(2, "Steve McQueen", LocalDate.of(1969, 10, 9)),
+				new ArtistSimple(3, "Steven R. McQueen", null));
+		given(artistService.getByName(eq(name)))
+			.willReturn(artistsFromService);
+		// 2. when/then
+		mockMvc
+			.perform(get(BASE_URI + "/byName")	// build GET HTTP request
+					.queryParam("n", name)
+					.accept(MediaType.APPLICATION_JSON)) // + header request
+			.andDo(print())	// intercept request to print 
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$").isArray())
+			.andExpect(jsonPath("$", Matchers.hasSize(3)))
+			.andExpect(
+					jsonPath("$[*].name", 
+							Matchers.everyItem(
+									//Matchers.is("Steve McQueen")
+									Matchers.endsWithIgnoringCase(name)
+									)
+					//jsonPath("$[0].name", Matchers.is("Steve McQueen")
+					));
+		then(artistService)
+			.should()
+			.getByName(eq(name));
+	}
 
 }

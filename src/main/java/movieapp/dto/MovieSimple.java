@@ -1,4 +1,4 @@
-package org.bollywood.movieapp.dto;
+package movieapp.dto;
 
 public class MovieSimple {
 	private Integer id;

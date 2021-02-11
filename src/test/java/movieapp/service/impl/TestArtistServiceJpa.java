@@ -116,29 +116,28 @@ class TestArtistServiceJpa {
 	@Test
 	void testGetByNamePresent() {
 		// 1. given
-		int id = 1;
+		//int id = 1;
 		String name = "Will Smith";
 		LocalDate birthdate = LocalDate.of(1968, 9, 25);
 		// perfect answer from mock
 		Artist artistEntity = new Artist(name, birthdate);
-		artistEntity.setId(id);
+		//artistEntity.setId(id);
 		given(artistRepository.findByName(name))
 			.willReturn(Stream.of(artistEntity));  //(Optional.of(Stream.of(artistEntity)));
 		// 2. when
-		Stream<ArtistSimple> optArtistSimpleDto = artistService.getByName(name);
+		Stream<ArtistSimple> streamArtistSimpleDtoOut = artistService.getByName(name);
 		// 3. then
 		// check mock has been called
-		then(artistRepository)
-			.should()
-			.findByName(eq(name));
-		// check answer
+//		then(artistRepository)
+//			.should()
+//			.findByName(eq(name));
+//		// check answer
 		
-		assertTrue(optArtistSimpleDto.forEach(m-> m.getName().equals(name)));
-//		optArtistSimpleDto.ifPresent(
-//				artistSimpleDto -> assertAll(
-//						() -> assertEquals(id, artistSimpleDto.getId()),
-//						() -> assertEquals(name, artistSimpleDto.getName()),
-//						() -> assertEquals(birthdate, artistSimpleDto.getBirthdate())));
+		
+		assertAll(streamArtistSimpleDtoOut.map(
+				a->()->assertEquals(name,a.getName())));
+	
+				
 	}
 }
 

@@ -1,6 +1,6 @@
-package org.bollywood.movieapp.dto;
+package movieapp.dto;
 
-import org.bollywood.movieapp.entity.Artist;
+import movieapp.entity.Artist;
 
 public class DirectorCount {
 

@@ -1,6 +1,8 @@
 package movieapp.service.impl;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
@@ -37,9 +39,10 @@ public class ArtistServiceJpa implements IArtistService{
 	}
 
 	@Override
-	public Stream<ArtistSimple> getByName(String name) {
-		return artistRepository.findByName(name)
-			.map(ArtistEntity -> modelMapper.map(Stream.of(ArtistEntity), ArtistSimple.class));
+	public List<ArtistSimple> getByName(String name) {
+			var res= artistRepository.findByName(name)
+			.map(artistEntity -> modelMapper.map(artistEntity, ArtistSimple.class)).collect(Collectors.toList());
+			 return res;
 		
 	}
 
